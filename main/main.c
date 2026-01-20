@@ -1,32 +1,46 @@
+/*Name: Ellie
+Date: January 19, 2026
+
+Description: 
+Each time the button is pressed and released, the LED switches to the opposite state.
+The first button press turns the LED ON, the second press turns it OFF, 
+and this ON/OFF pattern continues for every press*/
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "driver/gpio.h"
 
 #define LED_PIN GPIO_NUM_10
+#define BUTTON_PIN GPIO_NUM_4
 
-void app_main(void)
-{
-    // Reset GPIO to default state 
+#define loop_delay 10 
+void app_main(void){
     gpio_reset_pin(LED_PIN);
-
-    // Set GPIO direction to output 
     gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
 
-    // Disable pull-up and pull-down resistors 
     gpio_pullup_dis(LED_PIN);
     gpio_pulldown_dis(LED_PIN);
 
-    // Disable GPIO interrupts 
-    gpio_set_intr_type(LED_PIN, GPIO_INTR_DISABLE);
+    gpio_reset_pin(BUTTON_PIN);
+    gpio_set_direction(BUTTON_PIN, GPIO_MODE_INPUT);
+    gpio_set_level(BUTTON_PIN,0);
+    gpio_pullup_en(BUTTON_PIN);
+    gpio_pulldown_dis(BUTTON_PIN);
 
-    while (true)
-    {
-        gpio_set_level(LED_PIN, 1);   // LED ON
-        vTaskDelay(500 / portTICK_PERIOD_MS);
+    
+    bool prev_button = true;
+    bool current_button;
+    bool led = false;
 
-        gpio_set_level(LED_PIN, 0);   // LED OFF
-        vTaskDelay(500 / portTICK_PERIOD_MS);
+    while (1){
+        current_button = gpio_get_level(BUTTON_PIN);
+
+        if ((current_button == 0) && (prev_button == 1)){
+            led = !led;
+            gpio_set_level(LED_PIN, led);
+        }
+        prev_button = current_button;
+        vTaskDelay(25/portTICK_PERIOD_MS);
     }
 
 }

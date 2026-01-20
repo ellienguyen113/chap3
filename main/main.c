@@ -7,17 +7,17 @@
 
 void app_main(void)
 {
-    /* Reset GPIO to default state */
+    // Reset GPIO to default state 
     gpio_reset_pin(LED_PIN);
 
-    /* Set GPIO direction to output */
+    // Set GPIO direction to output 
     gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
 
-    /* Disable pull-up and pull-down resistors */
+    // Disable pull-up and pull-down resistors 
     gpio_pullup_dis(LED_PIN);
     gpio_pulldown_dis(LED_PIN);
 
-    /* Disable GPIO interrupts */
+    // Disable GPIO interrupts 
     gpio_set_intr_type(LED_PIN, GPIO_INTR_DISABLE);
 
     while (true)

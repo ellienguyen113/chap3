@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+
+#define LED_PIN GPIO_NUM_10
+
+void app_main(void)
+{
+    /* Reset GPIO to default state */
+    gpio_reset_pin(LED_PIN);
+
+    /* Set GPIO direction to output */
+    gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
+
+    /* Disable pull-up and pull-down resistors */
+    gpio_pullup_dis(LED_PIN);
+    gpio_pulldown_dis(LED_PIN);
+
+    /* Disable GPIO interrupts */
+    gpio_set_intr_type(LED_PIN, GPIO_INTR_DISABLE);
+
+    while (true)
+    {
+        gpio_set_level(LED_PIN, 1);   // LED ON
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+
+        gpio_set_level(LED_PIN, 0);   // LED OFF
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+
+}
